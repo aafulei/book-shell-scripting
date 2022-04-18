@@ -5,6 +5,7 @@ My solutions to exercises in **Shell Scripting** by *Jason Cannon* (2015).
 - [Chapter 1. Shell Scripting, Succinctly](#chapter-1-shell-scripting-succinctly)
 - [Chapter 2. Exit Statuses and Return Codes](#chapter-2-exit-statuses-and-return-codes)
 - [Chapter 3. Functions](#chapter-3-functions)
+- [Chapter 4. Wildcards](#chapter-4-wildcards)
 ## Chapter 1. Shell Scripting, Succinctly
 
 - Shebang - `#!`
@@ -365,3 +366,91 @@ file_count /usr/bin
         /usr/bin:
             1419
         ```
+
+## Chapter 4. Wildcards
+
+- Two main wildcards - `*` `?`
+- Character classes
+    - e.g. `ca[nt]*` for "can", "cat", "candy", and "catch"
+    - e.g. `[!aeiou]` for "be", but not "am", "is", or "are"
+- Ranges
+    - e.g. `[a-g]`
+- Named character classes
+    - `[:alpha:]`
+    - `[:alnum:]`
+    - `[:digit:]`
+    - `[:lower:]`
+    - `[:upper:]`
+    - `[:space:]`
+
+### Exercise 1
+
+Write a shell script that renames all files in the current directory that end in `.jpg` to begin with today's date in the following format: YYYY-MM-DD. For example, if a picture of my cat was in the current directory and today was October 31, 2016 it would change name from `mycat.jpg` to `2016-10-31-mycat.jpg`.
+
+*Hint: Look at the format options for the date command.*
+
+*For **extra credit**, make sure to gracefully handle instances where there are no `.jpg` files in the current directory. (Hint: `man bash` and read the section on the `nullglob` option.)*
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+shopt -s nullglob
+
+DATE=$(date +%F) # equivalently, date -I
+
+for FILE in *.jpg
+do
+    mv $FILE ${DATE}-${FILE}
+done
+```
+
+- [`41.sh`](./41.sh)
+
+### Exercise 2
+
+Write a script that renames files based on the file extension. The script should prompt the user for a file extension. Next, it should ask the user what prefix to prepend to the file name(s). By default, the prefix should be the current date in YYYY-MM-DD format. If the user simply presses enter, the current date will be used. Otherwise, whatever the user entered will be used as the prefix. Next, it should display the original file name and the new name of the file. Finally, it should rename the file.
+
+- Example output 1:
+
+```
+Please enter a file extension: jpg
+Please enter a file prefix:  (Press ENTER for 2015-08-10). vacation
+Renaming mycat.jpg to vacation-mycat.jpg.
+```
+
+- Example output 2:
+
+```
+Please enter a file extension: jpg
+Please enter a file prefix:  (Press ENTER for 2015-08-10).
+Renaming mycat.jpg to 2015-08-10-mycat.jpg.
+```
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+shopt -s nullglob
+
+DATE=$(date +%F) # equivalently, date -I
+
+read -p "Please enter a file extension: " EXT
+read -p "Please enter a file prefix: (Press ENTER for ${DATE}). " PREFIX
+
+if [ -z $PREFIX ]
+then
+    PREFIX=${DATE}
+fi
+
+for FILE in *.${EXT}
+do
+    NEW_FILE=${PREFIX}-${FILE}
+    echo "Renaming $FILE to ${NEW_FILE}."
+    mv $FILE ${NEW_FILE}
+done
+```
+
+- [`42.sh`](./42.sh)
