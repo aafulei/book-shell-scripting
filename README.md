@@ -4,6 +4,7 @@ My solutions to exercises in **Shell Scripting** by *Jason Cannon* (2015).
 
 - [Chapter 1. Shell Scripting, Succinctly](#chapter-1-shell-scripting-succinctly)
 - [Chapter 2. Exit Statuses and Return Codes](#chapter-2-exit-statuses-and-return-codes)
+- [Chapter 3. Functions](#chapter-3-functions)
 ## Chapter 1. Shell Scripting, Succinctly
 
 - Shebang - `#!`
@@ -289,3 +290,78 @@ fi
 - [`23.sh`](./23.sh)
 
     - Run with `./23.sh` and `sudo ./23.sh`, respectively, and check with `echo $?`
+
+## Chapter 3. Functions
+
+- Define a function with `function func() {}`
+- Call a function - no `()` needed
+    - Define before use
+- Positional parameters - `$1` `$2` and `$@` but no `$0`
+- Variable scope
+    - Global by default - blank if undefined
+    - Local with `local`
+- Exit statuses and return codes
+    - Explicit - return from `0` to `255`
+    - Implicit - exit status of last command in the function
+
+### Exercise 1
+
+Write a shell script that consists of a function that displays the number of files in the present working directory. Name this function `file_count` and call it in your script. If you use a variable in your function, remember to make it a local variable.
+
+*Hint: The `wc` utility is used to count the number of lines, words, and bytes.*
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+function file_count() {
+    local FILE_NUM=$(ls | wc -l)
+    echo "$FILE_NUM"
+}
+
+file_count
+```
+
+- [`31.sh`](./31.sh)
+
+### Exercise 2
+
+Modify the script from the previous exercise. Make the `file_count` function accept a directory as an argument. Next, have the function display the name of the directory followed by a colon. Finally, display the number of files to the screen on the next line. Call the function three times. First on the "/etc" directory, next on the "/var" directory and finally on the "/usr/bin" directory.
+
+Example output:
+
+```
+/etc:
+    85
+```
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+function file_count() {
+    local DIR=$1
+    local FILE_NUM=$(ls $1 | wc -l)
+    echo "${DIR}:"
+    echo "    $FILE_NUM"
+}
+
+file_count /etc
+file_count /var
+file_count /usr/bin
+```
+
+- [`32.sh`](./32.sh)
+
+    - Sample Output
+
+        ```
+        /etc:
+            185
+        /var:
+            13
+        /usr/bin:
+            1419
+        ```
