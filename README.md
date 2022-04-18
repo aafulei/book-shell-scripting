@@ -10,6 +10,8 @@ My solutions to exercises in **Shell Scripting** by *Jason Cannon* (2015).
 - [Chapter 6. Logging](#chapter-6-logging)
 - [Chapter 7. Debugging](#chapter-7-debugging)
 - [Appendix I. Shell Script Checklist](#appendix-i-shell-script-checklist)
+- [Appendix II. Shell Script Template](#appendix-ii-shell-script-template)
+
 ## Chapter 1. Shell Scripting, Succinctly
 
 - Shebang - `#!`
@@ -737,3 +739,47 @@ ls .
         exit 1
     fi
     ```
+
+## Appendix II. Shell Script Template
+
+```sh
+#!/bin/bash
+
+# This script greets users.
+
+GLOBAL_VAR="World"
+
+function greet() {
+    local LOCAL_VAR=1
+    local NAME_LIST=$@
+
+    if [ $# -eq 0 ]
+    then
+        echo "Hello, ${GLOBAL_VAR}!"
+    else
+        for NAME in $NAME_LIST
+        do
+            echo "${LOCAL_VAR}: Hello, ${NAME}!"
+            LOCAL_VAR=$((${LOCAL_VAR}+1))
+        done
+    fi
+}
+
+greet $@
+
+exit 0
+```
+
+- [`template.sh`](./template.sh)
+
+    - Sample Output
+
+        ```
+        $ ./template.sh
+        Hello, World!
+
+        $ ./template.sh Aaron Bobby Charlie
+        1: Hello, Aaron!
+        2: Hello, Bobby!
+        3: Hello, Charlie!
+        ```
