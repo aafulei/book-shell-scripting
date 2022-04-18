@@ -6,6 +6,7 @@ My solutions to exercises in **Shell Scripting** by *Jason Cannon* (2015).
 - [Chapter 2. Exit Statuses and Return Codes](#chapter-2-exit-statuses-and-return-codes)
 - [Chapter 3. Functions](#chapter-3-functions)
 - [Chapter 4. Wildcards](#chapter-4-wildcards)
+- [Chapter 5. Case Statements](#chapter-5-case-statements)
 ## Chapter 1. Shell Scripting, Succinctly
 
 - Shebang - `#!`
@@ -454,3 +455,99 @@ done
 ```
 
 - [`42.sh`](./42.sh)
+
+## Chapter 5. Case Statements
+
+- A typical case statement
+
+```sh
+read -p "Continue ([y]/n)? " ANSWER
+
+case "$ANSWER" in
+    [Yy]*)
+        echo "Doing ..."
+        ;;
+    *)
+        echo "Exit"
+        ;;
+esac
+```
+
+### Exercise 1
+
+Create a startup script for an application called `sleep-walking-server`, which
+is provided below. The script should be named `sleep-walking` and accept
+`start` and `stop` as arguments. If anything other than `start` or `stop` is
+provided as an argument, display a usage statement: "Usage sleep-walking
+start|stop" and terminate the script with an exit status of `1`.
+
+To start sleep-walking-server, use this command
+
+- `/tmp/sleep-walking-server &`
+
+To stop sleep-walking-server, use this command
+
+- `kill $(cat /tmp/sleep-walking-server.pid)`
+
+Here are the contents of `sleep-walking-server`. Be sure to put this file in `/tmp` and run `chmod 755 /tmp/sleep-walking-server` so that it is executable.
+
+```sh
+#!/bin/bash
+# Instructions:
+#   Place this script in /tmp
+#
+# Description:
+#   This script simulates a service or a daemon.
+
+PID_FILE="/tmp/sleep-walking-server.pid"
+trap "rm $PID_FILE; exit" SIGHUP SIGINT SIGTERM
+echo "$$" > $PID_FILE
+while true
+do
+    :
+done
+```
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+case "$1" in
+    "start")
+        /tmp/sleep-walking-server &
+        ;;
+    "stop")
+        kill $(cat /tmp/sleep-walking-server.pid)
+        ;;
+    *)
+        echo "Usage: $0 start|stop"
+        exit 1
+        ;;
+esac
+```
+
+- [`sleep-walking-server`](./sleep-walking-server)
+
+- [`51.sh`](./51.sh)
+
+    - Test
+
+        ```sh
+        # Before Run
+        cp ./sleep-walking-server /tmp
+        chmod 755 /tmp/sleep-walking-server
+
+        # Expect "Usage: ./51.sh start|stop"
+        ./51.sh help
+
+
+        # Expect Running
+        ./51.sh start
+        [ -e /tmp/sleep-walking-server.pid ] && echo "Running"
+
+
+        # Expect Stopped
+        ./51.sh stop
+        [ -e /tmp/sleep-walking-server.pid ] || echo "Stopped"
+        ```
