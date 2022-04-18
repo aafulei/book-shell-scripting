@@ -3,6 +3,7 @@
 My solutions to exercises in **Shell Scripting** by *Jason Cannon* (2015).
 
 - [Chapter 1. Shell Scripting, Succinctly](#chapter-1-shell-scripting-succinctly)
+- [Chapter 2. Exit Statuses and Return Codes](#chapter-2-exit-statuses-and-return-codes)
 ## Chapter 1. Shell Scripting, Succinctly
 
 - Shebang - `#!`
@@ -211,3 +212,80 @@ done
 ```
 
 - [`18.sh`](./18.sh)
+
+## Chapter 2. Exit Statuses And Return Codes
+
+- Exit status / return code / exit code - an integer in `[0, 255]`
+- Check exit status with `$?`
+- Join two commands with `&&` and `||`
+- Exit shell scripts with and without `exit`
+
+### Exercise 1
+
+Write a shell script that displays, "This script will exit with a 0 exit status." Be sure that the script does indeed exit with a `0` exit status.
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+echo "This script will exit with a 0 exit status."
+exit 0
+```
+
+- [`21.sh`](./21.sh)
+
+    - Check with `echo $?`
+
+### Exercise 2
+
+Write a shell script that accepts a file or directory name as an argument. Have the script report if it is a regular file, a directory, or another type of file. If it is a regular file, exit with a `0` exit status.  If it is a directory, exit with a `1` exit status.  If it is some other type of file, exit with a `2` exit status.
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+FILE=$1
+
+if [ -f $FILE ]
+then
+    echo "${FILE} is a regular file."
+    exit 0
+elif [ -d $FILE ]
+then
+    echo "${FILE} is a directory."
+    exit 1
+else
+    echo "${FILE} is neither a regular file nor a directory."
+    exit 2
+fi
+```
+
+- [`22.sh`](./22.sh)
+
+    - Run with `./22.sh [FILENAME]` and check with `echo $?`
+
+### Exercise 3
+
+Write a script that executes the command `cat /etc/shadow`. If the command returns a `0` exit status, report "Command succeeded" and exit with a `0` exit status. If the command returns a non-zero exit status, report "Command failed" and exit with a `1` exit status.
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+cat /etc/shadow
+if [ "$?" -eq "0" ]
+then
+    echo "Command succeeded"
+    exit 0
+else
+    echo "Command failed"
+    exit 1
+fi
+```
+
+- [`23.sh`](./23.sh)
+
+    - Run with `./23.sh` and `sudo ./23.sh`, respectively, and check with `echo $?`
