@@ -8,6 +8,7 @@ My solutions to exercises in **Shell Scripting** by *Jason Cannon* (2015).
 - [Chapter 4. Wildcards](#chapter-4-wildcards)
 - [Chapter 5. Case Statements](#chapter-5-case-statements)
 - [Chapter 6. Logging](#chapter-6-logging)
+- [Chapter 7. Debugging](#chapter-7-debugging)
 ## Chapter 1. Shell Scripting, Succinctly
 
 - Shebang - `#!`
@@ -609,3 +610,69 @@ logit "Random number: $RANDOM"
 ```
 
 - [`62.sh`](./62.sh)
+
+## Chapter 7. Debugging
+
+- Common debugging techniques
+
+    - `#!/bin/bash -x`
+    - `set -x` - print commands with variables and wildcards expanded
+    - `set -e` - stop immediately if a command exits with a non-zero status
+    - `set -v` - print commands as they are, i.e. no expansion
+    - `DEBUG=true; if $DEBUG; then ...`
+    - `DEBUG=true; $DEBUG && echo "Debug mode ON"`
+    - `DEBUG=false; $DEBUG || echo "Skipping a time-consuming command ..."`
+    - `DEBUG="echo"; $DEBUG ls`
+    - Use user-defined `debug()` function
+
+        ```sh
+        #!/bin/bash
+
+        function debug() {
+            echo "Executing: $@"
+            $@
+        }
+        ```
+
+    - `PS4='+ ${BASH_SOURCE}:${LINENO}:${FUNCNAME[0]}():'`
+
+- Text file errors such as `^M` when working across operating systems
+
+    - Check line endings
+        - Unix-style - `LF` - linefeed `\n`
+        - Windows-style - `CRLF` - carriage return and linefeed `\r\n`
+    - Use `cat -v`
+    - Use `dos2unix` and `unix2dos`
+
+### Exercise 1
+
+Write a shell script that exits on error and displays commands as they will execute, including all expansions and substitutions. Use 3 `ls` commands in your script. Make the first one succeed, the second one fail, and the third one succeed. If you are using the proper options, the third `ls` command will not be executed.
+
+**Solution:**
+
+```sh
+#!/bin/bash -ex
+
+ls .
+ls /not/here
+# should not be here
+ls .
+```
+
+- [`71.sh`](./71.sh)
+
+### Exercise 2
+
+Modify the previous exercise so that script continues, even if an error occurs. This time, all three `ls` commands will execute.
+
+**Solution:**
+
+```sh
+#!/bin/bash -x
+
+ls .
+ls /not/here
+ls .
+```
+
+- [`72.sh`](./72.sh)
