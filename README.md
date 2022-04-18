@@ -7,6 +7,7 @@ My solutions to exercises in **Shell Scripting** by *Jason Cannon* (2015).
 - [Chapter 3. Functions](#chapter-3-functions)
 - [Chapter 4. Wildcards](#chapter-4-wildcards)
 - [Chapter 5. Case Statements](#chapter-5-case-statements)
+- [Chapter 6. Logging](#chapter-6-logging)
 ## Chapter 1. Shell Scripting, Succinctly
 
 - Shebang - `#!`
@@ -551,3 +552,60 @@ esac
         ./51.sh stop
         [ -e /tmp/sleep-walking-server.pid ] || echo "Stopped"
         ```
+
+## Chapter 6. Logging
+
+- `logger`
+
+| Option             | Description                                                              |
+| ------------------ | ------------------------------------------------------------------------ |
+| `-p`, `--priority` | specify the priority with a pair of `facility.severity` e.g. `user.info` |
+| `-t`, `--tag`      | mark with specific tag                                                   |
+| `-i`               | log the PID                                                              |
+| `-s`, `--stderr`   | output the message to standard error as well                             |
+
+*Start the logging service with e.g. `sudo service rsyslog start` first.*
+
+### Exercise 1
+
+Write a shell script that displays one random number on the screen and also generates a syslog message with that random number. Use the `user` facility and the `info` severity for your messages.
+
+*Hint: Use `$RANDOM`*
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+MESSAGE="Random number: $RANDOM"
+
+echo "$MESSAGE"
+
+logger -p user.info "$MESSAGE"
+```
+
+- [`61.sh`](./61.sh)
+
+    - *Run `sudo service rsyslog start` first, if the service is not yet started.*
+
+### Exercise 2
+
+Modify the previous script so that it uses a logging function. Additionally, tag each syslog message with `randomly` and include the process ID. Generate 3 random numbers.
+
+**Solution:**
+
+```sh
+#!/bin/bash
+
+function logit() {
+    local MESSAGE=$@
+    echo "$MESSAGE"
+    logger -p user.info -t "randomly" -i "$MESSAGE"
+}
+
+logit "Random number: $RANDOM"
+logit "Random number: $RANDOM"
+logit "Random number: $RANDOM"
+```
+
+- [`62.sh`](./62.sh)
