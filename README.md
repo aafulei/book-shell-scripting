@@ -9,6 +9,7 @@ My solutions to exercises in **Shell Scripting** by *Jason Cannon* (2015).
 - [Chapter 5. Case Statements](#chapter-5-case-statements)
 - [Chapter 6. Logging](#chapter-6-logging)
 - [Chapter 7. Debugging](#chapter-7-debugging)
+- [Appendix I. Shell Script Checklist](#appendix-i-shell-script-checklist)
 ## Chapter 1. Shell Scripting, Succinctly
 
 - Shebang - `#!`
@@ -676,3 +677,63 @@ ls .
 ```
 
 - [`72.sh`](./72.sh)
+
+## Appendix I. Shell Script Checklist
+
+1. Start with shebang?
+
+    ```sh
+    #!/bin/bash
+    ```
+
+2. Then a comment for scirpt purpose?
+
+    ```sh
+    # This script creates backups.
+    ```
+
+3. Then global variables declared following the comment?
+
+    ```sh
+    DEBUG=true
+    ```
+
+4. Then functions grouped after global variables?
+
+    ```sh
+    function debug() {
+        echo $@
+        $@
+    }
+    ```
+
+5. Keyword `local` for local variables in functions?
+
+    ```sh
+    fucntion greet() {
+        local MESSAGE="Hello, World!"
+        echo "$MESSAGE"
+    }
+    ```
+
+6. Then the main body of the script?
+
+    ```sh
+    echo "Start"
+    ```
+
+7. Script exit with an explicit exit status?
+
+    ```sh
+    exit 0
+    ```
+
+8. Exit status explicitly used at all the exit points?
+
+    ```sh
+    if [ ! -d "$DIR" ]
+    then
+        echo "$DIR does not exist. Exit."
+        exit 1
+    fi
+    ```
