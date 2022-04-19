@@ -2,6 +2,10 @@
 
 My solutions to exercises in **Shell Scripting** by *Jason Cannon* (2015).
 
+- Get the PDF version [`here`](https://github.com/aafulei/shell-scripting/raw/main/shell-scripting-solutions.pdf)
+
+## Contents
+
 - [Chapter 1. Shell Scripting, Succinctly](#chapter-1-shell-scripting-succinctly)
 - [Chapter 2. Exit Statuses and Return Codes](#chapter-2-exit-statuses-and-return-codes)
 - [Chapter 3. Functions](#chapter-3-functions)
